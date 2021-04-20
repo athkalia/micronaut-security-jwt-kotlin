@@ -2,18 +2,23 @@ package example.micronaut
 
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Header
+import io.micronaut.http.annotation.Post
 import io.micronaut.http.annotation.Produces
 import io.micronaut.security.annotation.Secured
-import java.security.Principal
+import io.micronaut.security.authentication.Authentication
+import io.micronaut.security.rules.SecurityRule
 
-@Secured("isAuthenticated()") // <1>
-@Controller("/") // <2>
+@Controller
 class HomeController {
 
     @Produces(MediaType.TEXT_PLAIN) // <3>
-    @Get("/")  // <4>
-    fun index(principal: Principal): String {  // <5>
-        return principal.name
+    @Post("/lala")  // <4>
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    fun index(
+        @Header("Authorization") auth: String,
+        authentication: Authentication
+    ): String {
+        return authentication.name
     }
 }
